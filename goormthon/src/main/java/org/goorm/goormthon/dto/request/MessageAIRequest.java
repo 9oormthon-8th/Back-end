@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class MessageAIRequest {
 
-    public static String requestQuery(String cryReason) {
-        return String.format(QueryTemplate.WRITING_DIARY.value, cryReason);
+    public static String requestQuery(String keyword) {
+        return String.format(QueryTemplate.WRITING_DIARY.value, keyword);
     }
 
     enum QueryTemplate {
