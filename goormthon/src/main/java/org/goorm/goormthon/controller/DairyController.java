@@ -25,7 +25,10 @@ public class DairyController {
                 .body(BaseResponse.of(SuccessCode.OK, dairyService.getNewDairy(createDairyRequest)));
     }
 
-//    @GetMapping("/all")
-//    public ResponseEntity<BaseResponse<?>> all
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<?>> getAllDairy(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.of(SuccessCode.OK, dairyService.getAllDairy()));
+    }
 
 }
