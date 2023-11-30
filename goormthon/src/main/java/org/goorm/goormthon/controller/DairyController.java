@@ -45,6 +45,13 @@ public class DairyController {
 
     }
 
+    @GetMapping("/detail/{dairyId}")
+    public ResponseEntity<BaseResponse<?>> detailDairy(@PathVariable Long dairyId){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.of(SuccessCode.OK, dairyService.detailDairy(dairyId)));
+
+    }
+
 
 
 

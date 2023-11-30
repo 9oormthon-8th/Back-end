@@ -14,6 +14,7 @@ import org.goorm.goormthon.dto.request.DairyKeywordRequest;
 import org.goorm.goormthon.dto.request.MessageAIRequest;
 import org.goorm.goormthon.dto.response.AllDairyResponse;
 import org.goorm.goormthon.dto.response.NewDairyResponse;
+import org.goorm.goormthon.dto.response.newContent;
 import org.goorm.goormthon.repository.DairyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,13 +45,13 @@ public class DairyService {
                 newDairy.getLatitude(),
                 newDairy.getLongitude(),
                 newDairy.getLocation(),
-                newDairy.getKeyword(),
+                extractKeywords(newDairy.getKeyword()),
                 newDairy.getDairyContent(),
                 formattedDate
         );
     }
 
-    public Long updateDairyKeyword(Long dairyId, DairyKeywordRequest dairyKeywordRequest){
+    public newContent updateDairyKeyword(Long dairyId, DairyKeywordRequest dairyKeywordRequest){
         Dairy updateDairy = dairyRepository.findByIdOrThrow(dairyId);
 
         String message = getChatResponse(MessageAIRequest.requestQuery(updateDairy.getLocation(), dairyKeywordRequest.keyword()));
@@ -58,7 +59,10 @@ public class DairyService {
         updateDairy.setKeyword(dairyKeywordRequest.keyword());
         updateDairy.setDairyContent(message);
 
-        return updateDairy.getId();
+        return new newContent(
+                updateDairy.getId(),
+                updateDairy.getDairyContent()
+        );
     }
 
     private Dairy createDairy(CreateDairyRequest createDairyRequest, String message) {
@@ -100,6 +104,22 @@ public class DairyService {
         return updateDairy.getId();
     }
 
+    public AllDairyResponse detailDairy(Long dairyId){
+        Dairy dairy = dairyRepository.findByIdOrThrow(dairyId);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        String formattedDate = dairy.getCreatedAt().format(formatter);
+
+        return new AllDairyResponse(
+                dairy.getId(),
+                dairy.getLatitude(),
+                dairy.getLongitude(),
+                dairy.getLocation(),
+                dairy.getDairyContent(),
+                extractKeywords(dairy.getKeyword()),
+                formattedDate
+        );
+    }
 
 
     private String extractKeywords(String keyword) {
