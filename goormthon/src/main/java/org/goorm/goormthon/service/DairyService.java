@@ -3,10 +3,14 @@ package org.goorm.goormthon.service;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.goorm.goormthon.domain.Dairy;
 import org.goorm.goormthon.dto.request.CreateDairyRequest;
 import org.goorm.goormthon.dto.request.MessageAIRequest;
+import org.goorm.goormthon.dto.response.AllDairyResponse;
 import org.goorm.goormthon.dto.response.NewDairyResponse;
 import org.goorm.goormthon.repository.DairyRepository;
 import org.springframework.stereotype.Service;
@@ -54,6 +58,33 @@ public class DairyService {
         dairyRepository.save(newDairy);
 
         return newDairy;
+    }
+
+    public List<AllDairyResponse> getAllDairy(){
+        List<Dairy> allDairyList = dairyRepository.findAll();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.dd");
+
+        return allDairyList.stream()
+                .map(dairy -> new AllDairyResponse(
+                        dairy.getLatitude(),
+                        dairy.getLongitude(),
+                        dairy.getLocation(),
+                        truncateDairyContent(dairy.getDairyContent()),
+                        extractKeywords(dairy.getKeyword()),
+                        dairy.getCreatedAt().format(formatter)
+                ))
+                .collect(Collectors.toList());
+    }
+
+    private String extractKeywords(String keyword) {
+        // 해쉬태그를 떼고 쉼표로 구분된 문자열로 반환
+        return keyword.replaceAll("#", "").replace(" ", "");
+    }
+
+    private String truncateDairyContent(String content) {
+        // 30자로 제한하고, 30자 이상이면 ...을 붙여 반환
+        return content.length() > 30 ? content.substring(0, 30) + "..." : content;
     }
 
     public String getChatResponse(String prompt) {
