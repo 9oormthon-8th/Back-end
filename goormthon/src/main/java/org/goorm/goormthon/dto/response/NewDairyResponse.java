@@ -6,11 +6,11 @@ public record NewDairyResponse(
         Long id,
         Double latitude,
         Double longitude,
+        String roadAddress,
         String location,
         String keyword,
         String dairyContent,
-
-        String writeDate
+        String date
 
 ) {
 }
