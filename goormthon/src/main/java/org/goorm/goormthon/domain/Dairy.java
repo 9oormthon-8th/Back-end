@@ -40,5 +40,9 @@ public class Dairy extends BaseTimeEntity {
         this.dairyContent = dairyContent;
     }
 
+    public void setKeyword(String keyword){
+        this.keyword = keyword;
+    }
+
 
 }
