@@ -2,8 +2,10 @@ package org.goorm.goormthon.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.goorm.goormthon.dto.request.CreateDairyRequest;
 import org.goorm.goormthon.global.common.BaseTimeEntity;
 
 @Getter
@@ -23,7 +25,16 @@ public class Dairy extends BaseTimeEntity {
 
     private String keyword;
 
-    @Column(nullable = true)
     private String dairyContent;
+
+    @Builder
+    public Dairy(CreateDairyRequest createDairyRequest, String content){
+        this.latitude = createDairyRequest.latitude();
+        this.longitude = createDairyRequest.longitude();
+        this.location = createDairyRequest.location();
+        this.keyword = createDairyRequest.keyword();
+        this.dairyContent = content;
+    }
+
 
 }
