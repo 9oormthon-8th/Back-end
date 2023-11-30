@@ -3,7 +3,7 @@ package org.goorm.goormthon.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.goorm.goormthon.dto.request.CreateDairyRequest;
-import org.goorm.goormthon.dto.response.NewDairyResponse;
+import org.goorm.goormthon.dto.request.DairyContentRequest;
 import org.goorm.goormthon.global.common.BaseResponse;
 import org.goorm.goormthon.global.common.SuccessCode;
 import org.goorm.goormthon.service.DairyService;
@@ -29,6 +29,12 @@ public class DairyController {
     public ResponseEntity<BaseResponse<?>> getAllDairy(){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BaseResponse.of(SuccessCode.OK, dairyService.getAllDairy()));
+    }
+
+    @PatchMapping("/{dairyId}")
+    public ResponseEntity<BaseResponse<?>> patchDairyContent(@PathVariable Long dairyId, @RequestBody DairyContentRequest dairyContentRequest){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.of(SuccessCode.OK, dairyService.updateDairyContent(dairyId, dairyContentRequest)));
     }
 
 }
