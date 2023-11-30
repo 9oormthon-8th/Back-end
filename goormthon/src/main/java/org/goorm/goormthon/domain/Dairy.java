@@ -36,5 +36,9 @@ public class Dairy extends BaseTimeEntity {
         this.dairyContent = content;
     }
 
+    public void setDairyContent(String dairyContent) {
+        this.dairyContent = dairyContent;
+    }
+
 
 }

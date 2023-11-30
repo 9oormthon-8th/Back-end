@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.goorm.goormthon.domain.Dairy;
 import org.goorm.goormthon.dto.request.CreateDairyRequest;
+import org.goorm.goormthon.dto.request.DairyContentRequest;
 import org.goorm.goormthon.dto.request.MessageAIRequest;
 import org.goorm.goormthon.dto.response.AllDairyResponse;
 import org.goorm.goormthon.dto.response.NewDairyResponse;
@@ -75,6 +76,15 @@ public class DairyService {
                         dairy.getCreatedAt().format(formatter)
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Long updateDairyContent(Long dairyId, DairyContentRequest dairyContentRequest){
+        Dairy updateDairy = dairyRepository.findByIdOrThrow(dairyId);
+
+        updateDairy.setDairyContent(dairyContentRequest.dairyContent());
+        dairyRepository.save(updateDairy);
+
+        return updateDairy.getId();
     }
 
     private String extractKeywords(String keyword) {
