@@ -37,17 +37,15 @@ public class DairyService {
 
         Dairy newDairy = createDairy(createDairyRequest, message);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        String formattedDate = newDairy.getCreatedAt().format(formatter);
-
         return new NewDairyResponse(
                 newDairy.getId(),
                 newDairy.getLatitude(),
                 newDairy.getLongitude(),
+                newDairy.getRoadAddress(),
                 newDairy.getLocation(),
-                extractKeywords(newDairy.getKeyword()),
+                newDairy.getKeyword(),
                 newDairy.getDairyContent(),
-                formattedDate
+                newDairy.getDate()
         );
     }
 
@@ -80,17 +78,16 @@ public class DairyService {
     public List<AllDairyResponse> getAllDairy(){
         List<Dairy> allDairyList = dairyRepository.findAll();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.dd");
-
         return allDairyList.stream()
                 .map(dairy -> new AllDairyResponse(
                         dairy.getId(),
                         dairy.getLatitude(),
                         dairy.getLongitude(),
+                        dairy.getRoadAddress(),
                         dairy.getLocation(),
                         truncateDairyContent(dairy.getDairyContent()),
-                        extractKeywords(dairy.getKeyword()),
-                        dairy.getCreatedAt().format(formatter)
+                        dairy.getKeyword(),
+                        truncateDate(dairy.getDate())
                 ))
                 .collect(Collectors.toList());
     }
@@ -107,17 +104,15 @@ public class DairyService {
     public AllDairyResponse detailDairy(Long dairyId){
         Dairy dairy = dairyRepository.findByIdOrThrow(dairyId);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        String formattedDate = dairy.getCreatedAt().format(formatter);
-
         return new AllDairyResponse(
                 dairy.getId(),
                 dairy.getLatitude(),
                 dairy.getLongitude(),
+                dairy.getRoadAddress(),
                 dairy.getLocation(),
                 dairy.getDairyContent(),
-                extractKeywords(dairy.getKeyword()),
-                formattedDate
+                dairy.getKeyword(),
+                dairy.getDate()
         );
     }
 
@@ -130,6 +125,10 @@ public class DairyService {
     private String truncateDairyContent(String content) {
         // 30자로 제한하고, 30자 이상이면 ...을 붙여 반환
         return content.length() > 30 ? content.substring(0, 30) + "..." : content;
+    }
+
+    private static String truncateDate(String date) {
+        return date.substring(5, 10);
     }
 
     public String getChatResponse(String prompt) {

@@ -6,9 +6,10 @@ public record AllDairyResponse(
 
         Double latitude,
         Double longitude,
+        String roadAddress,
         String location,
         String dairyContent,
         String keyword,
-        String writeDate
+        String date
 ) {
 }
