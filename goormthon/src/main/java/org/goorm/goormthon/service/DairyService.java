@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.goorm.goormthon.domain.Dairy;
 import org.goorm.goormthon.dto.request.CreateDairyRequest;
 import org.goorm.goormthon.dto.request.DairyContentRequest;
+import org.goorm.goormthon.dto.request.DairyKeywordRequest;
 import org.goorm.goormthon.dto.request.MessageAIRequest;
 import org.goorm.goormthon.dto.response.AllDairyResponse;
 import org.goorm.goormthon.dto.response.NewDairyResponse;
@@ -49,6 +50,17 @@ public class DairyService {
         );
     }
 
+    public Long updateDairyKeyword(Long dairyId, DairyKeywordRequest dairyKeywordRequest){
+        Dairy updateDairy = dairyRepository.findByIdOrThrow(dairyId);
+
+        String message = getChatResponse(MessageAIRequest.requestQuery(updateDairy.getLocation(), dairyKeywordRequest.keyword()));
+        log.info("응답 message: {}", message);
+        updateDairy.setKeyword(dairyKeywordRequest.keyword());
+        updateDairy.setDairyContent(message);
+
+        return updateDairy.getId();
+    }
+
     private Dairy createDairy(CreateDairyRequest createDairyRequest, String message) {
 
         Dairy newDairy = Dairy.builder()
@@ -68,6 +80,7 @@ public class DairyService {
 
         return allDairyList.stream()
                 .map(dairy -> new AllDairyResponse(
+                        dairy.getId(),
                         dairy.getLatitude(),
                         dairy.getLongitude(),
                         dairy.getLocation(),
@@ -87,6 +100,8 @@ public class DairyService {
         return updateDairy.getId();
     }
 
+
+
     private String extractKeywords(String keyword) {
         // 해쉬태그를 떼고 쉼표로 구분된 문자열로 반환
         return keyword.replaceAll("#", "").replace(" ", "");
@@ -100,6 +115,4 @@ public class DairyService {
     public String getChatResponse(String prompt) {
         return chatgptService.sendMessage(prompt);
     }
-
-
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.goorm.goormthon.dto.request.CreateDairyRequest;
 import org.goorm.goormthon.dto.request.DairyContentRequest;
+import org.goorm.goormthon.dto.request.DairyKeywordRequest;
 import org.goorm.goormthon.global.common.BaseResponse;
 import org.goorm.goormthon.global.common.SuccessCode;
 import org.goorm.goormthon.service.DairyService;
@@ -32,9 +33,20 @@ public class DairyController {
     }
 
     @PatchMapping("/{dairyId}")
-    public ResponseEntity<BaseResponse<?>> patchDairyContent(@PathVariable Long dairyId, @RequestBody DairyContentRequest dairyContentRequest){
+    public ResponseEntity<BaseResponse<?>> updateDairyContent(@PathVariable Long dairyId, @RequestBody DairyContentRequest dairyContentRequest){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BaseResponse.of(SuccessCode.OK, dairyService.updateDairyContent(dairyId, dairyContentRequest)));
     }
+
+    @PatchMapping("/keyword/{dairyId}")
+    public ResponseEntity<BaseResponse<?>> updateDairyKeyword(@PathVariable Long dairyId, @RequestBody DairyKeywordRequest dairyKeywordRequest){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.of(SuccessCode.OK, dairyService.updateDairyKeyword(dairyId, dairyKeywordRequest)));
+
+    }
+
+
+
+
 
 }
